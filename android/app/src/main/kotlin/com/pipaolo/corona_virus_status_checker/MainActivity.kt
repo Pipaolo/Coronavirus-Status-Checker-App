@@ -1,4 +1,4 @@
-package com.example.corona_virus
+package com.pipaolo.corona_virus_status_checker
 
 import io.flutter.embedding.android.FlutterActivity
 

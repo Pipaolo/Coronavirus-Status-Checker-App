@@ -46,9 +46,6 @@ class CountryRepository {
 
       List<Country> countryCodes = await IsoCountries.iso_countries;
 
-      countryCodes.forEach((element) {
-        print(element.name);
-      });
       List<CovidCountry> countries = rawCountry.map((e) {
         String countryCode = '';
         for (var country in countryCodes) {
