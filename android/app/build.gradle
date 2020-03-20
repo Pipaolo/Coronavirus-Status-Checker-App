@@ -23,6 +23,7 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -38,7 +39,7 @@ android {
 
     defaultConfig {
 
-        applicationId "com.pipaolo.corona_virus_status_checker"
+        applicationId "com.pipaolo.coronavirus_tracker"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "505405696106",
+    "firebase_url": "https://coronavirus-tracker-dbd8d.firebaseio.com",
+    "project_id": "coronavirus-tracker-dbd8d",
+    "storage_bucket": "coronavirus-tracker-dbd8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505405696106:android:192d38d961891ffa130213",
+        "android_client_info": {
+          "package_name": "com.pipaolo.coronavirus_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505405696106-4qf3jb73t0r5hn2d90h4eevlav2ibovd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9cXD55zy7-LtFOHAi7T0hJTo14C-emH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505405696106-4qf3jb73t0r5hn2d90h4eevlav2ibovd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
