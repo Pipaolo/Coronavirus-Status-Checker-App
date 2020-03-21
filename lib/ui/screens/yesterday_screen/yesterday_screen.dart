@@ -83,7 +83,25 @@ class YesterdayScreen extends StatelessWidget {
       );
     } else {
       return Center(
-        child: Text('Oops Something Went Wrong. '),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.error,
+                color: Colors.blue,
+                size: ScreenUtil().setSp(400),
+              ),
+              Text(
+                'Woops, something bad happened. Please try again later.',
+                style: GoogleFonts.montserrat(
+                  fontSize: ScreenUtil().setSp(50),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
   }
@@ -91,7 +109,9 @@ class YesterdayScreen extends StatelessWidget {
   _buildSuccessState(List<CovidCountry> countries, BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
-        CountrySearchBarWidget(),
+        CountrySearchBarWidget(
+          isYesterday: true,
+        ),
         SliverGrid(
           delegate: SliverChildBuilderDelegate((context, index) {
             return CountryCardWidget(

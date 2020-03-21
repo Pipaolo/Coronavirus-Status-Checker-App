@@ -35,7 +35,9 @@ class YesterdayCountryBloc
     if (event is CountriesYesterdayFetched) {
       yield YesterdayCountryLoading();
       try {
-        countriesYesterday = await countryRepository.fetchYesterdaysResult();
+        if (countriesYesterday.isEmpty) {
+          countriesYesterday = await countryRepository.fetchYesterdaysResult();
+        }
         yield YesterdayCountrySuccess(countries: countriesYesterday);
       } catch (e) {
         yield YesterdayCountryError(errorText: e.toString());
@@ -44,11 +46,13 @@ class YesterdayCountryBloc
       yield YesterdayCountryLoading();
       try {
         yield YesterdayCountrySuccess(
-          countries: countriesYesterday.where(
-            (element) => element.name.toLowerCase().startsWith(
-                  event.query.toLowerCase(),
-                ),
-          ),
+          countries: countriesYesterday
+              .where(
+                (element) => element.name.toLowerCase().startsWith(
+                      event.query.toLowerCase(),
+                    ),
+              )
+              .toList(),
         );
       } catch (e) {
         yield YesterdayCountryError(errorText: e.toString());

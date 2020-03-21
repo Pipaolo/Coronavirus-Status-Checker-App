@@ -1,10 +1,12 @@
 import 'package:corona_virus/ui/screens/country_screen/bloc/country_bloc.dart';
+import 'package:corona_virus/ui/screens/yesterday_screen/bloc/yesterday_country_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CountrySearchBarWidget extends StatefulWidget {
-  CountrySearchBarWidget({Key key}) : super(key: key);
+  final bool isYesterday;
+  CountrySearchBarWidget({Key key, this.isYesterday}) : super(key: key);
 
   @override
   _CountrySearchBarWidgetState createState() => _CountrySearchBarWidgetState();
@@ -32,8 +34,13 @@ class _CountrySearchBarWidgetState extends State<CountrySearchBarWidget> {
                       onPressed: () {
                         setState(() {
                           _searchbarController.text = '';
-                          BlocProvider.of<CountryBloc>(context)
-                            ..add(CountriesFetched());
+                          if (widget.isYesterday) {
+                            BlocProvider.of<YesterdayCountryBloc>(context)
+                              ..add(CountriesYesterdayFetched());
+                          } else {
+                            BlocProvider.of<CountryBloc>(context)
+                              ..add(CountriesFetched());
+                          }
                         });
                       },
                     )
@@ -50,10 +57,20 @@ class _CountrySearchBarWidgetState extends State<CountrySearchBarWidget> {
 
   void _onChanged(String string) {
     if (string.isNotEmpty) {
-      BlocProvider.of<CountryBloc>(context)
-        ..add(CountriesSearched(query: string));
+      if (widget.isYesterday) {
+        BlocProvider.of<YesterdayCountryBloc>(context)
+          ..add(CountriesYesterdaySearched(query: string));
+      } else {
+        BlocProvider.of<CountryBloc>(context)
+          ..add(CountriesSearched(query: string));
+      }
     } else {
-      BlocProvider.of<CountryBloc>(context)..add(CountriesFetched());
+      if (widget.isYesterday) {
+        BlocProvider.of<YesterdayCountryBloc>(context)
+          ..add(CountriesYesterdayFetched());
+      } else {
+        BlocProvider.of<CountryBloc>(context)..add(CountriesFetched());
+      }
     }
   }
 }

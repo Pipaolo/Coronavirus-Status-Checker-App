@@ -1,5 +1,6 @@
 import 'package:corona_virus/routes/router.gr.dart';
 import 'package:corona_virus/ui/screens/widgets/info_dialog_widget.dart';
+import 'package:corona_virus/ui/screens/yesterday_screen/bloc/yesterday_country_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +25,8 @@ class HomeScreen extends StatelessWidget {
     } else if (choice == Constants.seeYesterday) {
       if (context.bloc<CountryBloc>().state is CountrySuccess) {
         Router.navigator.pushNamed(Router.yesterdayScreenRoute);
+        BlocProvider.of<YesterdayCountryBloc>(context)
+          ..add(CountriesYesterdayFetched());
       }
     }
   }
@@ -112,24 +115,34 @@ class HomeScreen extends StatelessWidget {
       );
     } else {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.error,
-                color: Colors.blue,
-                size: ScreenUtil().setSp(400),
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.error,
+                    color: Colors.blue,
+                    size: ScreenUtil().setSp(400),
+                  ),
+                  Text(
+                    'Woops, something bad happened. Please try again later.',
+                    style: GoogleFonts.montserrat(
+                      fontSize: ScreenUtil().setSp(50),
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                'Woops, somehthing bad happened. Please try again later.',
-                style: GoogleFonts.montserrat(
-                  fontSize: ScreenUtil().setSp(50),
-                ),
+            ),
+            SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -138,7 +151,9 @@ class HomeScreen extends StatelessWidget {
   _buildSuccessState(List<CovidCountry> countries, BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
-        CountrySearchBarWidget(),
+        CountrySearchBarWidget(
+          isYesterday: false,
+        ),
         SliverGrid(
           delegate: SliverChildBuilderDelegate((context, index) {
             return CountryCardWidget(

@@ -24,7 +24,9 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     if (event is CountriesFetched) {
       yield CountryLoading();
       try {
-        countriesPresent = await countryRepository.fetchCurrentResult();
+        if (countriesPresent.isEmpty) {
+          countriesPresent = await countryRepository.fetchCurrentResult();
+        }
         yield CountrySuccess(countries: countriesPresent);
       } catch (e) {
         yield CountryError(errorText: e.toString());
@@ -42,11 +44,13 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
       yield CountryLoading();
       try {
         yield CountrySuccess(
-          countries: countriesPresent.where(
-            (element) => element.name.toLowerCase().startsWith(
-                  event.query.toLowerCase(),
-                ),
-          ),
+          countries: countriesPresent
+              .where(
+                (element) => element.name.toLowerCase().startsWith(
+                      event.query.toLowerCase(),
+                    ),
+              )
+              .toList(),
         );
       } on SocketException catch (e) {
         yield CountryError(errorText: e.toString());
