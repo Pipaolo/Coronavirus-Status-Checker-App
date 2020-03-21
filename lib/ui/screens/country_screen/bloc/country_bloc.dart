@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:corona_virus/data/model/covid_country.dart';
-import 'package:corona_virus/data/repository/repository.dart';
+import 'package:corona_virus/data/repository/country_repository.dart';
 import 'package:equatable/equatable.dart';
 
 part 'country_event.dart';
@@ -10,6 +11,7 @@ part 'country_state.dart';
 
 class CountryBloc extends Bloc<CountryEvent, CountryState> {
   final CountryRepository countryRepository;
+  List<CovidCountry> countriesPresent = [];
 
   CountryBloc(this.countryRepository);
   @override
@@ -22,25 +24,31 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     if (event is CountriesFetched) {
       yield CountryLoading();
       try {
-        final countries = await countryRepository.fetchCountries();
-        yield CountrySuccess(countries: countries);
+        countriesPresent = await countryRepository.fetchCurrentResult();
+        yield CountrySuccess(countries: countriesPresent);
       } catch (e) {
         yield CountryError(errorText: e.toString());
       }
     } else if (event is CountriesUpdated) {
       yield CountryLoading();
       try {
-        final countries = await countryRepository.updateCountries();
-        yield CountrySuccess(countries: countries);
+        countriesPresent =
+            await countryRepository.updateCountries(event.isYesterday);
+        yield CountrySuccess(countries: countriesPresent);
       } catch (e) {
         yield CountryError(errorText: e.toString());
       }
     } else if (event is CountriesSearched) {
       yield CountryLoading();
       try {
-        final countries = await countryRepository.searchCountries(event.query);
-        yield CountrySuccess(countries: countries);
-      } catch (e) {
+        yield CountrySuccess(
+          countries: countriesPresent.where(
+            (element) => element.name.toLowerCase().startsWith(
+                  event.query.toLowerCase(),
+                ),
+          ),
+        );
+      } on SocketException catch (e) {
         yield CountryError(errorText: e.toString());
       }
     }

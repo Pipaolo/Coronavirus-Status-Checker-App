@@ -10,6 +10,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:corona_virus/ui/screens/splash_screen/splash_screen.dart';
 import 'package:corona_virus/ui/screens/home_screen/home_screen.dart';
 import 'package:corona_virus/ui/screens/intro_screen/intro_screen.dart';
+import 'package:corona_virus/ui/screens/yesterday_screen/yesterday_screen.dart';
 import 'package:corona_virus/ui/screens/country_screen/country_screen.dart';
 import 'package:corona_virus/data/model/covid_country.dart';
 
@@ -17,6 +18,7 @@ class Router {
   static const splashScreenRoute = '/';
   static const homeScreenRoute = '/home-screen-route';
   static const introScreenRoute = '/intro-screen-route';
+  static const yesterdayScreenRoute = '/yesterday-screen-route';
   static const countryDetailedScreenroute = '/country-detailed-screenroute';
   static final navigator = ExtendedNavigator();
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -47,6 +49,15 @@ class Router {
         final typedArgs = args as Key;
         return MaterialPageRoute<dynamic>(
           builder: (_) => IntroScreen(key: typedArgs),
+          settings: settings,
+        );
+      case Router.yesterdayScreenRoute:
+        if (hasInvalidArgs<Key>(args)) {
+          return misTypedArgsRoute<Key>(args);
+        }
+        final typedArgs = args as Key;
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => YesterdayScreen(key: typedArgs),
           settings: settings,
         );
       case Router.countryDetailedScreenroute:

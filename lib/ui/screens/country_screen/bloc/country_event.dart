@@ -10,8 +10,11 @@ class CountriesFetched extends CountryEvent {
 }
 
 class CountriesUpdated extends CountryEvent {
+  final bool isYesterday;
+
+  CountriesUpdated(this.isYesterday);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isYesterday];
 }
 
 class CountriesSearched extends CountryEvent {

@@ -1,67 +1,38 @@
-import 'package:corona_virus/routes/router.gr.dart';
-import 'package:corona_virus/ui/screens/widgets/info_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/constants.dart';
 import '../../../data/model/covid_country.dart';
-import '../country_screen/bloc/country_bloc.dart';
 import '../widgets/country_card_widget.dart';
 import '../widgets/country_search_bar_widget.dart';
+import 'bloc/yesterday_country_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key key}) : super(key: key);
-
-  void choiceAction(String choice, BuildContext context) {
-    if (choice == Constants.aboutUs) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return InfoDialogWidget();
-          });
-    } else if (choice == Constants.seeYesterday) {
-      if (context.bloc<CountryBloc>().state is CountrySuccess) {
-        Router.navigator.pushNamed(Router.yesterdayScreenRoute);
-      }
-    }
-  }
+class YesterdayScreen extends StatelessWidget {
+  const YesterdayScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Coronavirus Tracker'),
+        title: Text('Yesterdays Result'),
         centerTitle: true,
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: (string) => choiceAction(string, context),
-            itemBuilder: (context) {
-              return Constants.choices
-                  .map((e) => PopupMenuItem<String>(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList();
-            },
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          BlocProvider.of<CountryBloc>(context)..add(CountriesUpdated(false));
+          BlocProvider.of<YesterdayCountryBloc>(context)
+            ..add(CountriesYesterdayFetched());
           return null;
         },
-        child: BlocBuilder<CountryBloc, CountryState>(
+        child: BlocBuilder<YesterdayCountryBloc, YesterdayCountryState>(
           builder: (context, state) {
-            if (state is CountryLoading) {
+            if (state is YesterdayCountryLoading) {
               return _buildLoadingState();
-            } else if (state is CountrySuccess) {
+            } else if (state is YesterdayCountrySuccess) {
               return _buildSuccessState(state.countries, context);
-            } else if (state is CountryError) {
+            } else if (state is YesterdayCountryError) {
               return _buildErrorState(state.errorText, context);
-            } else if (state is CountryInitial) {
+            } else if (state is YesterdayCountryInitial) {
               return Container();
             }
             return Container();
@@ -112,25 +83,7 @@ class HomeScreen extends StatelessWidget {
       );
     } else {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.error,
-                color: Colors.blue,
-                size: ScreenUtil().setSp(400),
-              ),
-              Text(
-                'Woops, somehthing bad happened. Please try again later.',
-                style: GoogleFonts.montserrat(
-                  fontSize: ScreenUtil().setSp(50),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: Text('Oops Something Went Wrong. '),
       );
     }
   }
